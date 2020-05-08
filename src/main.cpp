@@ -57,33 +57,21 @@ void setup() {
 }
 
 void loop() {
-  
   if(received){
     while (TinyWire.available() > 0) {
       char buffer = TinyWire.read();
       sprintf(reception, "%c", buffer);
     }
-    if (strcmp(reception, "n") == 0) {blinkLED(1);}
-    else if (strcmp(reception, "f") == 0) {
-    //blinkLED(1);
-    system_sleep();
-    }else if (strcmp(reception, "r") == 0) {
-      x=0;y=0;
+    if (strcmp(reception, "n") == 0) {blinkLED(1);
+    }else if (strcmp(reception, "f") == 0) {system_sleep();
+    }else if (strcmp(reception, "r") == 0) {x=0;y=0;
     }
     received = false;
   }
-  
-    checkButtons();
+  checkButtons();
   if(change&&(retour!=oldRetour)){counter++;oldRetour=retour;}
-    if(((counter%2)==0)&&(change)){
-    //digitalWrite(7,HIGH);
-    x=retour;
-    change=false;
-    }
-    if(((counter%2)==1)&&(change)){
-    //digitalWrite(7,LOW);
-    y=retour;
-    change=false;}
+  if(((counter%2)==0)&&(change)){x=retour;change=false;}
+  if(((counter%2)==1)&&(change)){y=retour;change=false;}
 }
 void checkButtons(){
   int reading1 = digitalRead(buttonPin1);
@@ -104,6 +92,7 @@ void checkButtons(){
       if ((buttonState1 == LOW) && (buttonState2 == HIGH) && (buttonState3 == LOW)) {retour= 5;}
       if ((buttonState1 == HIGH) && (buttonState2 == LOW) && (buttonState3 == LOW)) {retour= 6;}
       if ((buttonState1 == LOW) && (buttonState2 == LOW) && (buttonState3 == LOW)) {retour= 7;}
+    blinkLED(1);
     }
   }
   lastButtonState1 = reading1;
@@ -111,7 +100,7 @@ void checkButtons(){
   lastButtonState3 = reading3;
 }
 
-void onI2CRequest() {
+void onI2CRequest() {//Send x and y to master
   byte data[2]={lowByte(x),highByte(x)};
   byte data1[2]={lowByte(y),highByte(y)};
   TinyWire.write(data[0]);
